@@ -36,6 +36,12 @@ export default class Search extends Component {
     fontSize: PropTypes.number,
     heightAdjust: PropTypes.number,
     backgroundColor: PropTypes.string,
+    innerBackgroundColor: PropTypes.string,
+    innerPadding: PropTypes.number,
+    innerMargin: PropTypes.number,
+    bottomMargin: PropTypes.bool,
+    innerBorderRadius: PropTypes.number,
+    inputPad: PropTypes.number,
     iconColor: PropTypes.string,
     textColor: PropTypes.string,
     selectionColor: PropTypes.string,
@@ -67,6 +73,12 @@ export default class Search extends Component {
     closeButtonAccessibilityLabel: 'Clear search text',
     heightAdjust: 0,
     backgroundColor: 'white',
+    innerBackgroundColor: 'white',
+    innerPadding: 0,
+    innerMargin: 0,
+    bottomMargin: false,
+    innerBorderRadius: 0,
+    inputPad: 0,
     iconColor: 'gray',
     textColor: 'gray',
     selectionColor: 'lightskyblue',
@@ -226,10 +238,16 @@ export default class Search extends Component {
       placeholder,
       heightAdjust,
       backgroundColor,
+      innerBackgroundColor,
+      innerPadding,
+      innerMargin,
+      bottomMargin,
+      innerBorderRadius,
       iconColor,
       textColor,
       selectionColor,
       placeholderTextColor,
+      inputPad,
       onBack,
       hideBack,
       hideX,
@@ -271,6 +289,14 @@ export default class Search extends Component {
             <View
               style={[
                 styles.nav,
+                {
+                  backgroundColor: innerBackgroundColor,
+                  paddingHorizontal: innerPadding,
+                  marginHorizontal: innerMargin,
+                  marginTop: innerMargin,
+                  marginBottom: bottomMargin ? innerMargin : 0,
+                  borderRadius: innerBorderRadius,
+                },
                 { height: (Platform.OS === 'ios' ? 52 : 62) + heightAdjust }
               ]}>
               {!hideBack && (
@@ -305,8 +331,8 @@ export default class Search extends Component {
                     fontSize: fontSize,
                     color: textColor,
                     fontFamily: fontFamily,
-                    marginLeft: hideBack ? 30 : 0,
-                    marginTop: Platform.OS === 'ios' ? heightAdjust / 2 + 10 : 0
+                    marginLeft: hideBack ? 30 + inputPad : inputPad,
+                    marginTop: Platform.OS === 'ios' ? 0 : 0
                   }
                 ]}
                 selectionColor={selectionColor}
@@ -324,8 +350,9 @@ export default class Search extends Component {
                 autoCapitalize={autoCapitalize}
                 keyboardAppearance={keyboardAppearance}
                 editable={editable}
+                clearButtonMode="while-editing"
               />
-              <TouchableOpacity
+              {!hideX && <TouchableOpacity
                 accessible={true}
                 accessibilityComponentType="button"
                 accessibilityLabel={closeButtonAccessibilityLabel}
@@ -349,7 +376,7 @@ export default class Search extends Component {
                     }}
                   />
                 )}
-              </TouchableOpacity>
+              </TouchableOpacity>}
             </View>
           </View>
         )}
@@ -364,7 +391,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
     position: 'absolute',
     elevation: 2,
-    shadowRadius: 5
+    shadowRadius: 5,
   },
   navWrapper: {
     width: Dimensions.get('window').width
@@ -380,13 +407,14 @@ const styles = StyleSheet.create({
     flexBasis: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   input: {
     ...Platform.select({
       ios: { height: 30 },
       android: { height: 50 }
     }),
-    width: Dimensions.get('window').width - 120
+    flex: 1,
+    //width: Dimensions.get('window').width - 80
   }
 });
